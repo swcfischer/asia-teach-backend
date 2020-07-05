@@ -48,7 +48,7 @@ function returnRandomEducation() {
   return educations[idx];
 }
 
-function createJobs(userUuid = '7ca7df65-4ba8-4134-91e4-87bcdce80e14') {
+function createJobs(userUuid = '74e8fcc4-1a28-4fb0-ad26-7343c24ac460') {
   /*
     uuid
     companyName
