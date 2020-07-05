@@ -1,0 +1,40 @@
+const { Sequelize, DataTypes } = require('sequelize');
+
+if (process.env.DATABASE_URL) {
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
+    protocol: 'postgres',
+    port: 5432,
+    host: process.env.DATABASE_HOST,
+    logging: true, //false
+  });
+} else {
+  sequelize = new Sequelize('stevenfischer', 'stevenfischer', '', {
+    host: 'localhost',
+    dialect: 'postgres',
+  });
+}
+
+const User = require('./User')(sequelize, DataTypes);
+const Job = require('./Job')(sequelize, DataTypes);
+const Resume = require('./Resume')(sequelize, DataTypes);
+
+// associations
+
+User.hasMany(Job);
+Job.belongsTo(User);
+
+User.hasOne(Resume);
+Resume.belongsTo(User);
+
+User.sync({ force: false });
+Job.sync({ force: false });
+Resume.sync({ force: false });
+
+module.exports = {
+  Sequelize,
+  sequelize,
+  User,
+  Job,
+  Resume,
+};
