@@ -39,36 +39,47 @@ router.post('/register', async (req, res) => {
       process.env.email_secret,
       { expiresIn: '2d' },
       async (err, emailToken) => {
-        const url = `http://localhost:3000/confirmation/${emailToken}`;
-        let testAccount = await nodemailer.createTestAccount();
+        try {
+          let url;
+          if (process.env.NODE_ENV === 'production') {
+            url = `https://historic-arches-33577.herokuapp.com/confirmation/${emailToken}`;
+          } else {
+            url = `http://localhost:3000/confirmation/${emailToken}`;
+          }
 
-        let transporter = nodemailer.createTransport({
-          host: 'smtp.ethereal.email',
-          port: 587,
-          secure: false, // true for 465, false for other ports
-          auth: {
-            user: testAccount.user, // generated ethereal user
-            pass: testAccount.pass, // generated ethereal password
-          },
-        });
+          let transporter = nodemailer.createTransport({
+            host: 'mail.privateemail.com',
+            port: 465,
+            secure: true, // true for 465, false for other ports
+            auth: {
+              user: process.env.EMAIL,
+              pass: process.env.EMAIL_PASS,
+            },
+          });
 
-        let info = await transporter.sendMail({
-          from: '"Asia Teach" <AsiaTeach@gmail.com>', // sender address
-          to: 'bar@example.com, baz@example.com', // list of receivers
-          subject: 'Confirmation Email -- Asia Teach', // Subject line
-          text: `Hi there,\n \n Use this link to verify your email ${url}`, // plain text body
-          html: `<b>Hi there</b>
+          let info = await transporter.sendMail({
+            from: '"Asia Teach" <hello@asiateach.io>', // sender address
+            to: `${email}, ${email}`, // list of receivers
+            subject: 'Confirmation Email -- Asia Teach', // Subject line
+            text: `Hi there,\n \n Use this link to verify your email ${url}`, // plain text body
+            html: `<b>Hi there</b>
                <br />
                <p>Use this link to verify your email <a href=${url}>Here is the link</a></p>`, // html body
-        });
+          });
 
-        console.log('Message sent: %s', info.messageId);
-        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+          console.log('Message sent: %s', info.messageId);
+          console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 
-        return res.json({
-          error: false,
-          message: 'Confirmation email was sent to ' + user.email,
-        });
+          return res.json({
+            error: false,
+            message: 'Confirmation email was sent to ' + user.email,
+          });
+        } catch (e) {
+          return res.json({
+            error: true,
+            message: e.message,
+          });
+        }
       }
     );
   });
