@@ -15,7 +15,11 @@ const baseRoutes = require('./routes');
 // sequelize.define(() => {});
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    exposedHeaders: 'Auth-Token,Authorization',
+  })
+);
 app.use(bodyParser.json({ limit: '10mb', extended: true }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
