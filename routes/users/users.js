@@ -219,7 +219,7 @@ router.post('/login', async (req, res) => {
       { expiresIn: '365d' },
       (err, token) => {
         console.log(err);
-        res.setHeader('Auth-Token', token);
+        res.set('Auth-Token', token);
         return res.json({
           currentUser: {
             email: user.email,
