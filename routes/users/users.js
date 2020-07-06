@@ -166,7 +166,7 @@ router.get('/current_user', async (req, res) => {
         where: {
           uuid: verified.data,
         },
-        attributes: ['email', 'confirmed', 'uuid'],
+        attributes: ['email', 'confirmed', 'uuid', 'subscriptionId'],
       });
       return res.json({ currentUser: user });
     } else {

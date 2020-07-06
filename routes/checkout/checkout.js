@@ -82,4 +82,100 @@ router.post(
   }
 );
 
+router.post('/sub-intent', async (req, res) => {
+  const { userUuid } = req.body;
+  try {
+    const user = await models.User.findOne({
+      where: {
+        uuid: userUuid,
+      },
+    });
+
+    const setupIntent = await stripe.setupIntents.create({
+      payment_method_types: ['card'],
+      customer: user.customerId,
+    });
+
+    return res.json({
+      client_secret: setupIntent.client_secret,
+      customerId: user.customerId,
+    });
+  } catch (e) {
+    return res.json({
+      error: true,
+      message: e.message,
+    });
+  }
+});
+
+router.post('/sub-payment', async (req, res) => {
+  const { customerId, paymentMethodId, userUuid } = req.body;
+
+  try {
+    const user = await models.User.findOne({
+      where: {
+        uuid: userUuid,
+      },
+    });
+    await stripe.customers.update(customerId, {
+      invoice_settings: {
+        default_payment_method: paymentMethodId,
+      },
+    });
+    const subscription = await stripe.subscriptions.create({
+      customer: customerId,
+      items: [{ plan: process.env.SUBSCRIPTION_PLAN_ID }],
+      expand: ['latest_invoice.payment_intent'],
+    });
+
+    await user.update({
+      subscriptionId: subscription.id,
+    });
+
+    res.send(subscription);
+  } catch (e) {
+    return res.json({
+      error: true,
+      message: e.message,
+    });
+  }
+});
+
+router.post('/check-sub', async (req, res) => {
+  const { subscriptionId } = req.body;
+
+  try {
+    const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    return res.json({
+      error: false,
+      status: subscription.status,
+    });
+  } catch (e) {
+    return res.json({
+      error: true,
+      message: e.message,
+    });
+  }
+});
+
+/*
+app.post("/subscription", async (req, res) => {
+  // Set the default payment method on the customer
+  await stripe.customers.update(req.body.a1, {
+    invoice_settings: {
+      default_payment_method: req.body.paymentMethodId
+    }
+  });
+
+  // Create the subscription
+  const subscription = await stripe.subscriptions.create({
+    customer: req.body.customerId,
+    items: [{ plan: process.env.SUBSCRIPTION_PLAN_ID }],
+    expand: ["latest_invoice.payment_intent"]
+  });
+  res.send(subscription);
+});
+
+*/
+
 module.exports = router;
