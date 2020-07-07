@@ -157,7 +157,7 @@ function createResumes(ids) {
       updatedAt: new Date(),
       resumeHtml: '<div>Resume</div>',
       profileImage:
-        'https://images.pexels.com/photos/1586205/pexels-photo-1586205.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260',
+        'https://widgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-4.png',
       lastUpdatedAt: new Date(),
       resumeUrl: 'www.google.com',
       // userUuid: uuidv4(),

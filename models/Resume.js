@@ -41,6 +41,18 @@ module.exports = (sequelize, DataTypes) => {
     lastUpdatedAt: {
       type: DataTypes.DATE,
     },
+    desiredStartDate: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    desiredCountry: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    desiredAgeGroup: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   });
 
   return Resume;

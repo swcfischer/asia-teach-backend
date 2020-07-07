@@ -276,6 +276,24 @@ router.get('/resume-board/filter/:userUuid', isAuthorized, async (req, res) => {
   }
 });
 
+router.get('/resume-details/:resumeUuid', async (req, res) => {
+  const { resumeUuid } = req.params;
+  try {
+    const resume = await models.Resume.findOne({
+      where: {
+        uuid: resumeUuid,
+      },
+    });
+
+    return res.json(resume);
+  } catch (e) {
+    return res.json({
+      error: true,
+      message: e.message,
+    });
+  }
+});
+
 router.get('/post-resume/preview/:userUuid', isAuthorized, async (req, res) => {
   const { userUuid } = req.params;
   try {
@@ -285,6 +303,8 @@ router.get('/post-resume/preview/:userUuid', isAuthorized, async (req, res) => {
       },
       // specify attributes when you know more
     });
+
+    console.log('resume', resume);
 
     return res.json(resume);
   } catch (e) {

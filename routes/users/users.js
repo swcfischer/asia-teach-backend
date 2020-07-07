@@ -189,7 +189,7 @@ router.post('/login', async (req, res) => {
     where: {
       email,
     },
-    attributes: ['uuid', 'confirmed', 'email', 'password'],
+    attributes: ['uuid', 'confirmed', 'email', 'password', 'subscriptionId'],
   });
 
   if (!user) {
@@ -225,6 +225,7 @@ router.post('/login', async (req, res) => {
             email: user.email,
             uuid: user.uuid,
             confirmed: user.confirmed,
+            subscriptionId: user.subscriptionId,
           },
         });
       }
@@ -302,11 +303,44 @@ router.get('/forgot-password', async (req, res) => {
 });
 
 router.post('/set-forgot-password', async (req, res) => {
-  const {} = req.body;
-  return res.json({
-    error: false,
-    message: 'nothing happening yet',
-  });
+  const { token, password, confirmPassword } = req.body;
+  try {
+    if (!password || !confirmPassword) {
+      throw new Error('Must provide passwords');
+    }
+    const verified = await jwt.verify(
+      token,
+      process.env.EMAIL_FORGOT_PASS_SECRET
+    );
+
+    const userUuid = verified.data;
+
+    const user = await models.User.findOne({
+      where: {
+        uuid: userUuid,
+      },
+    });
+
+    bcrypt.hash(password, saltRounds, async function (err, hash) {
+      if (err) {
+        throw new Error(err.message);
+      }
+
+      await user.update({
+        password: hash,
+      });
+
+      res.json({
+        error: false,
+        message: 'Password has been set',
+      });
+    });
+  } catch (e) {
+    return res.json({
+      error: true,
+      message: e.message,
+    });
+  }
 });
 
 router.get('/user/:userUuid', isAuthorized, async (req, res) => {
