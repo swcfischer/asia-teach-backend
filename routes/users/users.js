@@ -249,42 +249,64 @@ router.get('/forgot-password', async (req, res) => {
     });
   }
 
-  // this is where the nodemailer log will exist
-  // I beleive I want to tell the user an email was sent
-  // I would like to use the toaster for this
-  // but give it a longer lifespan
-  let testAccount = await nodemailer.createTestAccount();
+  jwt.sign(
+    { data: user.uuid },
+    process.env.EMAIL_FORGOT_PASS_SECRET,
+    { expiresIn: '2d' },
+    async (err, emailToken) => {
+      if (err) {
+        return res.json({
+          error: true,
+          message: err.message,
+        });
+      }
 
-  // create reusable transporter object using the default SMTP transport
-  let transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    secure: false, // true for 465, false for other ports
-    auth: {
-      user: testAccount.user, // generated ethereal user
-      pass: testAccount.pass, // generated ethereal password
-    },
-  });
+      const url =
+        process.env.NODE_ENV === 'production'
+          ? `https://historic-arches-33577.herokuapp.com/change-password/${emailToken}`
+          : `http://localhost:3000/change-password/${emailToken}`;
 
-  // send mail with defined transport object
-  let info = await transporter.sendMail({
-    from: '"Asia Teach" <AsiaTeach@gmail.com>', // sender address
-    to: 'bar@example.com, baz@example.com', // list of receivers
-    subject: 'Password rest -- Asia Teach', // Subject line
-    text: 'Hello world?', // plain text body
-    html: `<b>Hi there</b>
+      let transporter = nodemailer.createTransport({
+        host: 'mail.privateemail.com',
+        port: 465,
+        secure: true,
+        auth: {
+          user: process.env.EMAIL,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+
+      let info = await transporter.sendMail({
+        from: '"Asia Teach" <hello@asiateach.io>',
+        to: `${email}, ${email}`,
+        subject: 'Forgot Password Email',
+        text: `Hi there,\n \n Use this link to enter in a new password ${url}`,
+        html: `<b>Hi there</b>
            <br />
-           <p>Use this link to reset your password <a href=localhost:3000/reset-password/${'jsonwebtok'}>Here is the link</a></p>`, // html body
+           <p>
+            Use this link to enter in a new password <a href=${url}>Here is the link</a>
+            <br />
+            This link will expire in two days.
+           </p>`,
+      });
+
+      console.log('Message sent: %s', info.messageId);
+
+      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+      return res.json({
+        error: false,
+        message: 'Email was sent successfully',
+      });
+    }
+  );
+});
+
+router.post('/set-forgot-password', async (req, res) => {
+  const {} = req.body;
+  return res.json({
+    error: false,
+    message: 'nothing happening yet',
   });
-
-  console.log('Message sent: %s', info.messageId);
-  // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-  // send a jwt
-
-  // Preview only available when sending through an Ethereal account
-  console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-  // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-  return res.send('successful');
 });
 
 router.get('/user/:userUuid', isAuthorized, async (req, res) => {
