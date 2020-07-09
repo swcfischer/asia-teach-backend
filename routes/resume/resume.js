@@ -21,7 +21,16 @@ router.get('/post-resume/details/:userUuid', isAuthorized, async (req, res) => {
       where: {
         userUuid,
       },
-      attributes: ['education', 'email', 'experience', 'name', 'nationality'],
+      attributes: [
+        'education',
+        'email',
+        'experience',
+        'name',
+        'nationality',
+        'desiredAgeGroup',
+        'desiredStartDate',
+        'desiredCountry',
+      ],
     });
 
     if (resume) {
@@ -39,7 +48,16 @@ router.get('/post-resume/details/:userUuid', isAuthorized, async (req, res) => {
 
 router.put('/post-resume/details/:userUuid', isAuthorized, async (req, res) => {
   const { userUuid } = req.params;
-  const { name, email, nationality, experience, education } = req.body;
+  const {
+    name,
+    email,
+    nationality,
+    experience,
+    education,
+    desiredCountry,
+    desiredStartDate,
+    desiredAgeGroup,
+  } = req.body;
 
   try {
     let resume = await models.Resume.findOne({
@@ -63,6 +81,9 @@ router.put('/post-resume/details/:userUuid', isAuthorized, async (req, res) => {
         nationality,
         experience,
         education,
+        desiredCountry,
+        desiredStartDate,
+        desiredAgeGroup,
       });
       return res.json(resume);
     } else {
