@@ -27,9 +27,9 @@ Job.belongsTo(User);
 User.hasOne(Resume);
 Resume.belongsTo(User);
 
-User.sync({ force: true });
-Job.sync({ force: true });
-Resume.sync({ force: true });
+User.sync({ force: false });
+Job.sync({ force: false });
+Resume.sync({ force: false });
 
 module.exports = {
   Sequelize,
