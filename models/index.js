@@ -29,7 +29,7 @@ Resume.belongsTo(User);
 
 User.sync({ force: false });
 Job.sync({ force: false });
-Resume.sync({ force: true });
+Resume.sync({ force: false });
 
 module.exports = {
   Sequelize,
