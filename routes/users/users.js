@@ -44,7 +44,7 @@ router.post('/register', async (req, res) => {
         try {
           let url;
           if (process.env.NODE_ENV === 'production') {
-            url = `https://historic-arches-33577.herokuapp.com/confirmation/${emailToken}`;
+            url = `https://stunning-denali-preserve-57189.herokuapp.com/confirmation/${emailToken}`;
           } else {
             url = `http://localhost:3000/confirmation/${emailToken}`;
           }
