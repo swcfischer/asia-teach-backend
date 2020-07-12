@@ -41,14 +41,14 @@ function returnRandomNationality() {
 }
 
 function returnRandomEducation() {
-  const educations = ['High School', 'Bachelors', 'Masters', 'Phd'];
+  const educations = ['High School', "Bachelor's", 'Masters', 'Phd'];
 
   const idx = returnRandomNumberBetweenZeroAnd(3);
 
   return educations[idx];
 }
 
-function createJobs(userUuid = 'd42151cb-8eb7-497c-982f-b683ece03ddd') {
+function createJobs(userUuid = '76f6d104-360f-473c-9c89-d4a4fb7dce63') {
   /*
     uuid
     companyName
@@ -76,7 +76,7 @@ function createJobs(userUuid = 'd42151cb-8eb7-497c-982f-b683ece03ddd') {
       country: returnRandomCountry(),
       city: faker.address.city(),
       pay: faker.random.number(),
-      ageGroup: 'children',
+      ageGroup: 'Children',
       duration: 4,
       classSize: '1-10',
       startDate: 'March',
@@ -160,6 +160,10 @@ function createResumes(ids) {
         'https://widgetwhats.com/app/uploads/2019/11/free-profile-photo-whatsapp-4.png',
       lastUpdatedAt: new Date(),
       resumeUrl: 'www.google.com',
+      desiredStartDate: 'January',
+      desiredCountry: 'Japan',
+      desiredAgeGroup: 'College',
+
       // userUuid: uuidv4(),
       userUuid: ids[i],
     });

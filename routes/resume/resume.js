@@ -262,7 +262,15 @@ router.patch(
 const limit = 12; // 10 search results
 // * Reads jobs base on criteria -- has pagination
 router.get('/resume-board/filter/:userUuid', isAuthorized, async (req, res) => {
-  const { nationality, experience, education, page } = req.query;
+  const {
+    nationality,
+    experience,
+    education,
+    page,
+    desiredAgeGroup,
+    desiredCountry,
+    desiredStartDate,
+  } = req.query;
   const pageAsNum = page ? Number(page) : 1;
 
   // if (!nationalities.includes(nationality)) {
@@ -272,7 +280,14 @@ router.get('/resume-board/filter/:userUuid', isAuthorized, async (req, res) => {
   //   });
   // }
 
-  const whereIterator = { nationality, experience, education }; // isPublished: true
+  const whereIterator = {
+    nationality,
+    experience,
+    education,
+    desiredAgeGroup,
+    desiredCountry,
+    desiredStartDate,
+  }; // isPublished: true
   const whereObj = {};
   for (name in whereIterator) {
     if (whereIterator[name]) {

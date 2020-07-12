@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes, User) => {
       type: DataTypes.STRING,
     },
     ageGroup: {
-      type: DataTypes.ENUM('children', 'adolescents', 'adults'),
+      type: DataTypes.ENUM('Children', 'Adolescents', 'University', 'Adults'),
     },
     duration: {
       type: DataTypes.INTEGER,

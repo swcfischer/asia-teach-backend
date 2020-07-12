@@ -41,6 +41,9 @@ router.post('/register', async (req, res) => {
       process.env.email_secret,
       { expiresIn: '2d' },
       async (err, emailToken) => {
+        if (err) {
+          throw new Error(err.message);
+        }
         try {
           let url;
           if (process.env.NODE_ENV === 'production') {
@@ -50,12 +53,12 @@ router.post('/register', async (req, res) => {
           }
           const msg = {
             to: email,
-            from: 'hello@asiateach.io',
+            from: 'Hello@asiateach.io',
             subject: 'Confirmation Email from Asia Teach',
             text: `Hi there \nUse this link to verify your email: ${url}`,
             html: `<b>Hi there</b><br /><p>Use this link to verify your email <a href=${url}>Here is the link</a></p>`,
           };
-          const result = await sgMail.send(msg);
+          await sgMail.send(msg);
 
           return res.json({
             error: false,
@@ -325,19 +328,9 @@ router.get('/forgot-password', async (req, res) => {
           ? `https://historic-arches-33577.herokuapp.com/change-password/${emailToken}`
           : `http://localhost:3000/change-password/${emailToken}`;
 
-      let transporter = nodemailer.createTransport({
-        host: 'mail.privateemail.com',
-        port: 465,
-        secure: true,
-        auth: {
-          user: process.env.EMAIL,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-
-      let info = await transporter.sendMail({
-        from: '"Asia Teach" <hello@asiateach.io>',
-        to: `${email}, ${email}`,
+      const msg = {
+        from: 'Hello@asiateach.io',
+        to: email,
         subject: 'Forgot Password Email',
         text: `Hi there,\n \n Use this link to enter in a new password ${url}`,
         html: `<b>Hi there</b>
@@ -347,11 +340,9 @@ router.get('/forgot-password', async (req, res) => {
             <br />
             This link will expire in two days.
            </p>`,
-      });
+      };
+      await sgMail.send(msg);
 
-      console.log('Message sent: %s', info.messageId);
-
-      console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
       return res.json({
         error: false,
         message: 'Email was sent successfully',
