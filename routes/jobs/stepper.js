@@ -324,12 +324,9 @@ router.post(
       );
       // test images would normally come from db
       // job.images
-      console.log('images', images);
-      console.log('already', alreadyUploadedImagesFromClient);
       const imagesToBeDeleted = job.images.filter(
         (el) => !alreadyUploadedImagesFromClient.includes(el)
       );
-      console.log('imagesToBeDeleted', imagesToBeDeleted);
       const deletePromises = imagesToBeDeleted.map((el) => {
         const params = {
           Bucket: 'image-carousel-asia-teach',
@@ -338,7 +335,6 @@ router.post(
         return s3.deleteObject(params).promise();
       });
       const deletePromisesData = await Promise.all(deletePromises);
-      console.log('deletePromisesData', deletePromisesData);
 
       const imagesToBeUploaded = images.filter((el) => el.match(/base64/));
 

@@ -71,9 +71,11 @@ router.put('/post-resume/details/:userUuid', isAuthorized, async (req, res) => {
         'experience',
         'name',
         'nationality',
+        'desiredCountry',
+        'desiredStartDate',
+        'desiredAgeGroup',
       ],
     });
-    console.log(resume);
     if (resume) {
       await resume.update({
         name,
@@ -94,6 +96,9 @@ router.put('/post-resume/details/:userUuid', isAuthorized, async (req, res) => {
         nationality,
         experience,
         education,
+        desiredCountry,
+        desiredAgeGroup,
+        desiredStartDate,
       });
       return res.json(resume);
     }
@@ -339,8 +344,6 @@ router.get('/post-resume/preview/:userUuid', isAuthorized, async (req, res) => {
       },
       // specify attributes when you know more
     });
-
-    console.log('resume', resume);
 
     return res.json(resume);
   } catch (e) {
