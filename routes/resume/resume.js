@@ -216,7 +216,7 @@ router.patch(
   isAuthorized,
   async (req, res) => {
     const { userUuid } = req.params;
-    const { resumeUrl } = req.body;
+    const { resumeUrl, resumeHtml } = req.body;
 
     try {
       const resume = await models.Resume.findOne({
@@ -224,6 +224,17 @@ router.patch(
           userUuid,
         },
       });
+
+      if (resumeHtml) {
+        await resume.update({
+          resumeHtml,
+        });
+
+        return res.json({
+          error: false,
+          message: 'Resume updated sucessfully',
+        });
+      }
 
       const buffer = dataUriToBuffer(resumeUrl);
       const params = {
@@ -237,6 +248,9 @@ router.patch(
 
       if (false || resume.resumeUrl) {
         s3.putObject(params, async (err, data) => {
+          await resume.update({
+            resumeHtml: '',
+          });
           return res.json({
             error: false,
             message: 'Resume updated successfully',
@@ -247,6 +261,7 @@ router.patch(
           console.log('err', err);
           await resume.update({
             resumeUrl: data.Location,
+            resumeHtml: '',
           });
 
           return res.json({
