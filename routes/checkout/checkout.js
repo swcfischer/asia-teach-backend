@@ -57,14 +57,21 @@ router.post('/payments-jobs', async (req, res) => {
 router.post(
   '/webhooks',
   bodyParser.raw({ type: 'application/json' }),
-  (request, response) => {
+  async (request, response) => {
     const event = request.body;
     // Handle the event
     switch (event.type) {
       case 'payment_intent.succeeded':
         const paymentIntent = event.data.object;
-        console.log('paymentIntent', paymentIntent);
-        console.log('PaymentIntent was successful!');
+
+        const user = await models.User.findOne({
+          where: {
+            customerId: event.data.customer,
+          },
+        });
+
+        return response.json({ received: true, email: user.email });
+
         break;
       case 'payment_method.attached':
         const paymentMethod = event.data.object;
