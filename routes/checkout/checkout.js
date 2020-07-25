@@ -63,14 +63,17 @@ router.post(
     switch (event.type) {
       case 'payment_intent.succeeded':
         const paymentIntent = event.data.object;
+        try {
+          const user = await models.User.findOne({
+            where: {
+              customerId: event.data.customer,
+            },
+          });
 
-        const user = await models.User.findOne({
-          where: {
-            customerId: event.data.customer,
-          },
-        });
-
-        return response.json({ received: true, email: user.email });
+          return response.json({ received: true, email: user.email });
+        } catch (err) {
+          return response.json({ received: true, message: err.message });
+        }
 
         break;
       case 'payment_method.attached':

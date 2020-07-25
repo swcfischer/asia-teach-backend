@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const uuidv4 = require('uuid/v4');
 const jwt = require('jsonwebtoken');
 const express = require('express');
-const nodemailer = require('nodemailer');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const sgMail = require('@sendgrid/mail');
