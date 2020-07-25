@@ -66,7 +66,7 @@ router.post(
         try {
           const user = await models.User.findOne({
             where: {
-              customerId: event.data.customer,
+              customerId: paymentIntent.customer,
             },
           });
 
