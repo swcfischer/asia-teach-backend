@@ -78,7 +78,7 @@ router.post(
 
     // Return a 200 response to acknowledge receipt of the event
 
-    return response.json({ received: true });
+    return response.json({ received: true, event });
   }
 );
 
