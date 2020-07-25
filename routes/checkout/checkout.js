@@ -7,9 +7,9 @@ const { isAuthorized } = require('../util');
 const toCents = 100;
 
 const jobPriceMap = {
-  one: 20 * toCents,
-  five: 85 * toCents,
-  ten: 150 * toCents,
+  one: 65 * toCents,
+  five: 275 * toCents,
+  ten: 450 * toCents,
 };
 
 router.post('/payments-jobs', async (req, res) => {
