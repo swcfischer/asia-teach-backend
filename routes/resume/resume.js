@@ -87,7 +87,10 @@ router.put('/post-resume/details/:userUuid', isAuthorized, async (req, res) => {
         desiredStartDate,
         desiredAgeGroup,
       });
-      return res.json(resume);
+      return res.json({
+        error: false,
+        message: 'Resume details updated successfully',
+      });
     } else {
       resume = await models.Resume.create({
         userUuid,
@@ -100,7 +103,10 @@ router.put('/post-resume/details/:userUuid', isAuthorized, async (req, res) => {
         desiredAgeGroup,
         desiredStartDate,
       });
-      return res.json(resume);
+      return res.json({
+        error: false,
+        message: 'Resume details updated successfully',
+      });
     }
   } catch (e) {
     res.json({

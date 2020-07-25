@@ -77,7 +77,10 @@ router.post('/jobs/details/:uuid/:userUuid', isAuthorized, async (req, res) => {
     //     uuid
     //   }
     // });
-    res.json(job);
+    res.json({
+      error: false,
+      message: 'Job details updated successfully',
+    });
   } catch (err) {
     res.json({
       error: true,
@@ -121,7 +124,10 @@ router.post('/job/richtext/:uuid/:userUuid', isAuthorized, async (req, res) => {
       descriptionHTML,
     });
 
-    return res.json(job);
+    return res.json({
+      error: false,
+      message: 'Text updated sucessfully',
+    });
   } catch (err) {
     res.json({
       error: true,
@@ -147,7 +153,10 @@ router.post('/job/publish/:uuid/:userUuid', isAuthorized, async (req, res) => {
       });
     }
 
-    return res.json(job);
+    return res.json({
+      error: false,
+      message: 'Job published successfully',
+    });
   } catch (err) {
     return res.json({
       error: true,
