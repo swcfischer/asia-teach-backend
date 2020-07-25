@@ -63,12 +63,21 @@ router.post(
     switch (event.type) {
       case 'payment_intent.succeeded':
         const paymentIntent = event.data.object;
+        const amount = paymentIntent.amount;
         try {
           const user = await models.User.findOne({
             where: {
               customerId: paymentIntent.customer,
             },
           });
+
+          for (let i = 0; i < 3; i++) {
+            const job = await models.Job.build({
+              userUuid: user.uuid,
+            });
+
+            await job.save();
+          }
 
           return response.json({ received: true, email: user.email });
         } catch (err) {
