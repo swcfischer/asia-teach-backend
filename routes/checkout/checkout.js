@@ -60,6 +60,11 @@ router.post(
   async (request, response) => {
     const event = request.body;
     // Handle the event
+    /*
+    65 * toCents,
+  five: 275 * toCents,
+  ten: 450 * toCents,
+  */
     switch (event.type) {
       case 'payment_intent.succeeded':
         const paymentIntent = event.data.object;
@@ -70,8 +75,16 @@ router.post(
               customerId: paymentIntent.customer,
             },
           });
+          let limit;
+          if (amount === 450 * 100) {
+            limit = 10;
+          } else if (amount === 275 * 100) {
+            limit = 5;
+          } else {
+            limit = 1;
+          }
 
-          for (let i = 0; i < 3; i++) {
+          for (let i = 0; i < limit; i++) {
             const job = await models.Job.build({
               userUuid: user.uuid,
             });
