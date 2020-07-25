@@ -411,4 +411,28 @@ router.get('/user/:userUuid', isAuthorized, async (req, res) => {
   }
 });
 
+router.post('/contact-us', async (req, res) => {
+  const { email, text } = req.body;
+
+  try {
+    const msg = {
+      from: 'Hello@asiateach.io',
+      to: 'Hello@asiateach.io',
+      subject: 'Contact Us ' + email,
+      text,
+    };
+    await sgMail.send(msg);
+
+    res.json({
+      error: false,
+      message: 'Message sent',
+    });
+  } catch (err) {
+    res.json({
+      error: true,
+      message: err.message,
+    });
+  }
+});
+
 module.exports = router;

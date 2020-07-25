@@ -307,6 +307,7 @@ router.get('/resume-board/filter/:userUuid', isAuthorized, async (req, res) => {
     desiredAgeGroup,
     desiredCountry,
     desiredStartDate,
+    isPublished: true,
   }; // isPublished: true
   const whereObj = {};
   for (name in whereIterator) {
@@ -368,5 +369,31 @@ router.get('/post-resume/preview/:userUuid', isAuthorized, async (req, res) => {
     });
   }
 });
+
+router.post(
+  '/post-resume/publish/:userUuid',
+  isAuthorized,
+  async (req, res) => {
+    const { userUuid } = req.params;
+    try {
+      const resume = await models.Resume.findOne({
+        where: {
+          userUuid: userUuid,
+        },
+        // specify attributes when you know more
+      });
+      await resume.update({
+        isPublished: true,
+        lastUpdatedAt: new Date(),
+      });
+      return res.json({ error: false, message: 'Resume Published' });
+    } catch (e) {
+      return res.json({
+        error: true,
+        message: e.message,
+      });
+    }
+  }
+);
 
 module.exports = router;
