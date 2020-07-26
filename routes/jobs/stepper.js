@@ -72,12 +72,8 @@ router.post('/jobs/details/:uuid/:userUuid', isAuthorized, async (req, res) => {
     });
 
     await job.update(req.body);
-    // const job = await models.Job.update(req.body, {
-    //   where: {
-    //     uuid
-    //   }
-    // });
     res.json({
+      job: job,
       error: false,
       message: 'Job details updated successfully',
     });
