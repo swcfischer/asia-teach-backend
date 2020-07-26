@@ -46,13 +46,13 @@ router.post('/register', async (req, res) => {
         try {
           let url;
           if (process.env.NODE_ENV === 'production') {
-            url = `https://stunning-denali-preserve-57189.herokuapp.com/confirmation/${emailToken}`;
+            url = `https://www.asia-teach.com/confirmation/${emailToken}`;
           } else {
             url = `http://localhost:3000/confirmation/${emailToken}`;
           }
           const msg = {
             to: email,
-            from: 'Hello@asiateach.io',
+            from: 'Hello@asia-teach.com',
             subject: 'Confirmation Email from Asia Teach',
             text: `Hi there \nUse this link to verify your email: ${url}`,
             html: `<b>Hi there</b><br /><p>Use this link to verify your email <a href=${url}>Here is the link</a></p>`,
@@ -324,11 +324,11 @@ router.get('/forgot-password', async (req, res) => {
 
       const url =
         process.env.NODE_ENV === 'production'
-          ? `https://historic-arches-33577.herokuapp.com/change-password/${emailToken}`
+          ? `https://www.asia-teach.com/change-password/${emailToken}`
           : `http://localhost:3000/change-password/${emailToken}`;
 
       const msg = {
-        from: 'Hello@asiateach.io',
+        from: 'Hello@asia-teach.com',
         to: email,
         subject: 'Forgot Password Email',
         text: `Hi there,\n \n Use this link to enter in a new password ${url}`,
@@ -416,8 +416,8 @@ router.post('/contact-us', async (req, res) => {
 
   try {
     const msg = {
-      from: 'Hello@asiateach.io',
-      to: 'Hello@asiateach.io',
+      from: 'Hello@asia-teach.com',
+      to: 'Hello@asia-teach.com',
       subject: 'Contact Us ' + email,
       text,
     };
