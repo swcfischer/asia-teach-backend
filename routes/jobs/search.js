@@ -88,6 +88,7 @@ router.get('/job/:uuid', async (req, res) => {
         'pay',
         'thumbnail',
         'email',
+        'link',
       ],
     });
     return res.json({
