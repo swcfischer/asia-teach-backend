@@ -196,48 +196,30 @@ router.get(
   async (req, res) => {
     const { userUuid, subscriptionId } = req.params;
     const result = await stripe.subscriptions.retrieve(subscriptionId);
-    return res.json({ isActive: result.cancel_at_period_end });
+    return res.json({
+      isRenew: result.cancel_at_period_end,
+      status: result.status,
+    });
   }
 );
 
 router.post(
-  '/subscription/cancel/:userUuid/:subscriptionId',
+  '/subscription/toggle/:userUuid/:subscriptionId',
   isAuthorized,
   async (req, res) => {
     const { userUuid, subscriptionId } = req.params;
 
     try {
-      const result = await stripe.subscriptions.update(subscriptionId, {
-        cancel_at_period_end: true,
+      const result = await stripe.subscriptions.retrieve(subscriptionId);
+
+      const resultUpdate = await stripe.subscriptions.update(subscriptionId, {
+        cancel_at_period_end: !result.cancel_at_period_end,
       });
 
       return res.json({
         error: false,
         message: 'Subscription updated',
-      });
-    } catch (err) {
-      return res.json({
-        error: true,
-        message: err.message,
-      });
-    }
-  }
-);
-
-router.post(
-  '/subscription/renew/:userUuid/:subscriptionId',
-  isAuthorized,
-  async (req, res) => {
-    const { userUuid, subscriptionId } = req.params;
-
-    try {
-      const result = await stripe.subscriptions.update(subscriptionId, {
-        cancel_at_period_end: false,
-      });
-
-      return res.json({
-        error: false,
-        message: 'Subscription updated',
+        isRenew: !result.cancel_at_period_end,
       });
     } catch (err) {
       return res.json({

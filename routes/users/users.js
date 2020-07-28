@@ -228,6 +228,7 @@ router.get('/current_user', async (req, res) => {
         },
         attributes: ['email', 'confirmed', 'uuid', 'subscriptionId'],
       });
+
       return res.json({ currentUser: user });
     } else {
       res.json({ currentUser: null });
