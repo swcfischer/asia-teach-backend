@@ -18,6 +18,7 @@ router.get(
           isPublished: false,
         },
         attributes: ['companyName', 'uuid'],
+        order: [['createdAt', 'DESC']],
       });
 
       return res.json({
