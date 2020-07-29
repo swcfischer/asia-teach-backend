@@ -28,7 +28,7 @@ User.hasOne(Resume);
 Resume.belongsTo(User);
 
 User.sync({ force: false });
-Job.sync({ force: true });
+Job.sync({ force: false });
 Resume.sync({ force: false });
 
 module.exports = {
