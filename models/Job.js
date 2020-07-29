@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes, User) => {
       type: DataTypes.INTEGER,
       validate: {
         min: 1,
-        max: 12,
+        max: 13,
       },
     },
     classSize: {
