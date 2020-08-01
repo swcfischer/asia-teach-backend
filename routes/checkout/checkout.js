@@ -69,6 +69,11 @@ router.post(
       case 'payment_intent.succeeded':
         const paymentIntent = event.data.object;
         const amount = paymentIntent.amount;
+        if (amount === 55 * 100) {
+          return res.json({
+            received: true,
+          });
+        }
         try {
           const user = await models.User.findOne({
             where: {
@@ -80,7 +85,7 @@ router.post(
             limit = 10;
           } else if (amount === 275 * 100) {
             limit = 5;
-          } else {
+          } else if (amount === 65 * 100) {
             limit = 1;
           }
 
