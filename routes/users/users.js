@@ -16,7 +16,14 @@ const saltRounds = 10;
 // ! something worth considering
 
 router.post('/register', async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, password2 } = req.body;
+
+  if (password2) {
+    return res.json({
+      error: true,
+      message: 'Invalid inputs',
+    });
+  }
 
   bcrypt.hash(password, saltRounds, async function (err, hash) {
     const user = await models.User.build({
@@ -342,7 +349,14 @@ router.get('/user/:userUuid', isAuthorized, async (req, res) => {
 });
 
 router.post('/contact-us', async (req, res) => {
-  const { email, text } = req.body;
+  const { email, text, subject } = req.body;
+
+  if (subject) {
+    return res.json({
+      error: true,
+      message: 'Invalid inputs',
+    });
+  }
 
   try {
     const msg = {
