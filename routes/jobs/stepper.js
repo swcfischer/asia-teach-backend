@@ -373,6 +373,7 @@ router.post(
 
       return res.json({
         error: false,
+        images: newImages,
         message: 'Images uploaded',
       });
     } catch (e) {
