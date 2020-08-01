@@ -195,11 +195,18 @@ router.get(
   isAuthorized,
   async (req, res) => {
     const { userUuid, subscriptionId } = req.params;
-    const result = await stripe.subscriptions.retrieve(subscriptionId);
-    return res.json({
-      isRenew: result.cancel_at_period_end,
-      status: result.status,
-    });
+    try {
+      const result = await stripe.subscriptions.retrieve(subscriptionId);
+      return res.json({
+        cancelAtPeriodEnd: result.cancel_at_period_end,
+        status: result.status,
+      });
+    } catch (e) {
+      return res.json({
+        error: true,
+        message: e.message,
+      });
+    }
   }
 );
 
@@ -219,7 +226,7 @@ router.post(
       return res.json({
         error: false,
         message: 'Subscription updated',
-        isRenew: !result.cancel_at_period_end,
+        cancelAtPeriodEnd: !result.cancel_at_period_end,
       });
     } catch (err) {
       return res.json({

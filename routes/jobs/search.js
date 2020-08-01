@@ -9,6 +9,7 @@ router.get('/jobs/cities/:country', async (req, res) => {
     const cities = await models.Job.findAll({
       where: {
         country,
+        isPublished: true,
       },
       attributes: [
         // specify an array where the first element is the SQL function and the second is the alias

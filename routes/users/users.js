@@ -16,7 +16,14 @@ const saltRounds = 10;
 // ! something worth considering
 
 router.post('/register', async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, password2 } = req.body;
+
+  if (password2) {
+    return res.json({
+      error: true,
+      message: 'Invalid inputs',
+    });
+  }
 
   bcrypt.hash(password, saltRounds, async function (err, hash) {
     const user = await models.User.build({
@@ -73,77 +80,6 @@ router.post('/register', async (req, res) => {
     );
   });
 });
-
-// router.post('/register', async (req, res) => {
-//   const { email, password } = req.body;
-
-//   bcrypt.hash(password, saltRounds, async function (err, hash) {
-//     const user = await models.User.build({
-//       uuid: uuidv4(),
-//       email,
-//       password: hash,
-//     });
-
-//     try {
-//       await user.save();
-//     } catch (e) {
-//       return res.json({
-//         error: true,
-//         message: 'That email is already in use',
-//       });
-//     }
-
-//     // ! set expiration on jwt
-//     jwt.sign(
-//       { data: user.uuid },
-//       process.env.email_secret,
-//       { expiresIn: '2d' },
-//       async (err, emailToken) => {
-//         try {
-//           let url;
-//           if (process.env.NODE_ENV === 'production') {
-//             url = `https://historic-arches-33577.herokuapp.com/confirmation/${emailToken}`;
-//           } else {
-//             url = `http://localhost:3000/confirmation/${emailToken}`;
-//           }
-
-//           let transporter = nodemailer.createTransport({
-//             host: 'mail.privateemail.com',
-//             port: 465,
-//             secure: true, // true for 465, false for other ports
-//             auth: {
-//               user: process.env.EMAIL,
-//               pass: process.env.EMAIL_PASS,
-//             },
-//           });
-
-//           let info = await transporter.sendMail({
-//             from: '"Asia Teach" <hello@asiateach.io>', // sender address
-//             to: `${email}, ${email}`, // list of receivers
-//             subject: 'Confirmation Email -- Asia Teach', // Subject line
-//             text: `Hi there,\n \n Use this link to verify your email ${url}`, // plain text body
-//             html: `<b>Hi there</b>
-//                <br />
-//                <p>Use this link to verify your email <a href=${url}>Here is the link</a></p>`, // html body
-//           });
-
-//           console.log('Message sent: %s', info.messageId);
-//           console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-
-//           return res.json({
-//             error: false,
-//             message: 'Confirmation email was sent to ' + user.email,
-//           });
-//         } catch (e) {
-//           return res.json({
-//             error: true,
-//             message: e.message,
-//           });
-//         }
-//       }
-//     );
-//   });
-// });
 
 router.post('/confirmation/', async (req, res) => {
   const { token } = req.body;
@@ -413,7 +349,14 @@ router.get('/user/:userUuid', isAuthorized, async (req, res) => {
 });
 
 router.post('/contact-us', async (req, res) => {
-  const { email, text } = req.body;
+  const { email, text, subject } = req.body;
+
+  if (subject) {
+    return res.json({
+      error: true,
+      message: 'Invalid inputs',
+    });
+  }
 
   try {
     const msg = {
