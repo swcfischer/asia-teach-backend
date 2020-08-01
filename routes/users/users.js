@@ -62,7 +62,7 @@ router.post('/register', async (req, res) => {
             from: 'Hello@asia-teach.com',
             subject: 'Confirmation Email from Asia Teach',
             text: `Hi there \nUse this link to verify your email: ${url}`,
-            html: `<b>Hi there</b><br /><p>Use this link to verify your email <a href=${url}>Here is the link</a></p>`,
+            html: `Hi there<br /><p>Use this link to verify your email <a href=${url}>here</a></p>`,
           };
           await sgMail.send(msg);
 
@@ -269,10 +269,10 @@ router.get('/forgot-password', async (req, res) => {
         to: email,
         subject: 'Forgot Password Email',
         text: `Hi there,\n \n Use this link to enter in a new password ${url}`,
-        html: `<b>Hi there</b>
+        html: `Hi there
            <br />
            <p>
-            Use this link to enter in a new password <a href=${url}>Here is the link</a>
+            Use this link to enter in a new password <a href=${url}>here</a>
             <br />
             This link will expire in two days.
            </p>`,
