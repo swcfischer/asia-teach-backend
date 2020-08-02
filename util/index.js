@@ -21,9 +21,17 @@ function returnRandomNumberBetweenZeroAnd(end) {
 }
 
 function returnRandomCountry() {
-  const countries = ['china', 'japan', 'taiwan', 'thailand', 'south-korea'];
-  const numBetween0and4 = returnRandomNumberBetweenZeroAnd(4);
-  return countries[numBetween0and4];
+  const countries = [
+    'china',
+    'south-korea',
+    'taiwan',
+    'japan',
+    'thailand',
+    'vietnam',
+    'indonesia',
+  ];
+  const numbetwen0and6 = returnRandomNumberBetweenZeroAnd(6);
+  return countries[numbetwen0and6];
 }
 
 function returnRandomNationality() {
