@@ -59,6 +59,10 @@ router.post(
   bodyParser.raw({ type: 'application/json' }),
   async (request, response) => {
     const event = request.body;
+    return res.json({
+      received: true,
+      event,
+    });
     // Handle the event
     /*
     65 * toCents,
@@ -68,7 +72,7 @@ router.post(
     switch (event.type) {
       case 'payment_intent.succeeded':
         const paymentIntent = event.data.object;
-        const amount = paymentIntent.data.object.amount;
+        const amount = paymentIntent.amount;
         if (amount === 55 * 100) {
           return res.json({
             received: true,
