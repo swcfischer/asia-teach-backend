@@ -68,7 +68,7 @@ router.post(
     switch (event.type) {
       case 'payment_intent.succeeded':
         const paymentIntent = event.data.object;
-        const amount = paymentIntent.amount;
+        const amount = paymentIntent.data.object.amount;
         if (amount === 55 * 100) {
           return res.json({
             received: true,
