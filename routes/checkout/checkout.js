@@ -57,28 +57,24 @@ router.post('/payments-jobs', async (req, res) => {
 router.post(
   '/webhooks',
   bodyParser.raw({ type: 'application/json' }),
-  async (request, response) => {
-    const event = request.body;
-    return res.json({
-      received: true,
-      event,
-    });
+  async (req, res) => {
+    const event = req.body;
     // Handle the event
     /*
     65 * toCents,
   five: 275 * toCents,
   ten: 450 * toCents,
   */
-    switch (event.type) {
-      case 'payment_intent.succeeded':
-        const paymentIntent = event.data.object;
-        const amount = paymentIntent.amount;
-        if (amount === 55 * 100) {
-          return res.json({
-            received: true,
-          });
-        }
-        try {
+    try {
+      switch (event.type) {
+        case 'payment_intent.succeeded':
+          const paymentIntent = event.data.object;
+          const amount = paymentIntent.amount;
+          if (amount === 55 * 100) {
+            return res.json({
+              received: true,
+            });
+          }
           const user = await models.User.findOne({
             where: {
               customerId: paymentIntent.customer,
@@ -101,25 +97,25 @@ router.post(
             await job.save();
           }
 
-          return response.json({ received: true, email: user.email });
-        } catch (err) {
-          return response.json({ received: true, message: err.message });
-        }
+          return res.json({ received: true, email: user.email });
 
-        break;
-      case 'payment_method.attached':
-        const paymentMethod = event.data.object;
-        console.log('PaymentMethod was attached to a Customer!');
-        break;
-      // ... handle other event types
-      default:
-      // Unexpected event type
-      // return response.status(400).end();
+          break;
+        case 'payment_method.attached':
+          const paymentMethod = event.data.object;
+          console.log('PaymentMethod was attached to a Customer!');
+          break;
+        // ... handle other event types
+        default:
+        // Unexpected event type
+        // return res.status(400).end();
+      }
+    } catch (err) {
+      return res.json({ received: true, message: err.message });
     }
 
-    // Return a 200 response to acknowledge receipt of the event
+    // Return a 200 res to acknowledge receipt of the event
 
-    return response.json({ received: true, event });
+    return res.json({ received: true, event });
   }
 );
 
