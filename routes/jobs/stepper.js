@@ -142,7 +142,7 @@ router.post('/job/publish/:uuid/:userUuid', isAuthorized, async (req, res) => {
         uuid,
       },
     });
-    if (!job.isPublished) {
+    if (!job.isPublished && !job.publishedDate) {
       await job.update({
         isPublished: true,
         publishedDate: Date.now(),
