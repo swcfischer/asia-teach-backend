@@ -4,7 +4,7 @@ const cors = require('cors');
 
 const bodyParser = require('body-parser');
 const userRoutes = require('./routes/users/users');
-const { search, jobs, stepper, dashboard } = require('./routes/jobs/');
+const { search, jobs, stepper, dashboard, coupon } = require('./routes/jobs/');
 // will turn into named exports
 const resume = require('./routes/resume/resume');
 const checkout = require('./routes/checkout/checkout');
@@ -31,6 +31,7 @@ app.use('/api', stepper);
 app.use('/api', dashboard);
 app.use('/api', resume);
 app.use('/api', checkout);
+app.use('/api', coupon);
 
 const PORT = process.env.PORT || 5000;
 

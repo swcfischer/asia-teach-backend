@@ -68,4 +68,15 @@ router.get('/jobs/published/:userUuid', isAuthorized, async (req, res) => {
   }
 });
 
+router.get('/jobs/unpublished/:userUuid', async (req, res) => {
+  const jobs = await models.Job.findAll({
+    where: {
+      isPublished: true,
+      publishedDate: {
+        [Op.lt]: moment().subtract(45, 'days').toDate(),
+      },
+    },
+  });
+});
+
 module.exports = router;

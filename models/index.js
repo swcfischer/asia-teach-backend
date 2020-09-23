@@ -18,6 +18,7 @@ if (process.env.DATABASE_URL) {
 const User = require('./User')(sequelize, DataTypes);
 const Job = require('./Job')(sequelize, DataTypes);
 const Resume = require('./Resume')(sequelize, DataTypes);
+const Coupon = require('./Coupon')(sequelize, DataTypes);
 
 // associations
 
@@ -30,6 +31,7 @@ Resume.belongsTo(User);
 User.sync({ force: false });
 Job.sync({ force: false });
 Resume.sync({ force: false });
+Coupon.sync({ force: false });
 
 module.exports = {
   Sequelize,
@@ -37,4 +39,5 @@ module.exports = {
   User,
   Job,
   Resume,
+  Coupon,
 };
