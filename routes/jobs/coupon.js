@@ -1,8 +1,8 @@
 var models = require('../../models');
 var router = require('express').Router();
 const bcrypt = require('bcrypt');
-const faker = require('faker');
 const uuidv4 = require('uuid/v4');
+const jwt = require('jsonwebtoken');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 router.get('/coupons', async (req, res) => {
@@ -16,13 +16,13 @@ router.get('/coupons', async (req, res) => {
   return res.json(codes);
 });
 
-router.post('/coupons/create', async (req, res) => {
-  const coupon = models.Coupon.build({});
+// router.post('/coupons/create', async (req, res) => {
+//   const coupon = models.Coupon.build({});
 
-  await coupon.save();
+//   await coupon.save();
 
-  return res.json(coupon);
-});
+//   return res.json(coupon);
+// });
 
 const saltRounds = 10;
 
@@ -83,13 +83,24 @@ router.post('/coupon/create-account-with-job', async (req, res) => {
         });
 
         await job.save();
-
-        res.json({
-          error: false,
-          job,
-          user,
-          coupon,
-        });
+        jwt.sign(
+          { data: user.uuid },
+          process.env.secret,
+          { expiresIn: '365d' },
+          (err, token) => {
+            console.log(err);
+            res.set('Auth-Token', token);
+            return res.json({
+              message: 'Account created successfully',
+              currentUser: {
+                email: user.email,
+                uuid: user.uuid,
+                confirmed: user.confirmed,
+                subscriptionId: user.subscriptionId,
+              },
+            });
+          }
+        );
       } catch (e) {
         return res.json({
           error: true,
