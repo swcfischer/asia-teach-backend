@@ -74,6 +74,10 @@ module.exports = (sequelize, DataTypes, User) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    isExpired: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
     // photos: [ of strings ]
   });
 

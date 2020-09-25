@@ -53,6 +53,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    isExpired: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   });
 
   return Resume;
