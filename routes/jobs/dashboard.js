@@ -68,15 +68,30 @@ router.get('/jobs/published/:userUuid', isAuthorized, async (req, res) => {
   }
 });
 
-router.get('/jobs/unpublished/:userUuid', async (req, res) => {
-  const jobs = await models.Job.findAll({
-    where: {
-      isPublished: true,
-      publishedDate: {
-        [Op.lt]: moment().subtract(45, 'days').toDate(),
+// router.get('/jobs/unpublished/:userUuid', async (req, res) => {
+//   const jobs = await models.Job.findAll({
+//     where: {
+//       isPublished: true,
+//       isExpired: false,
+//     },
+//   });
+// });
+
+router.get('/jobs/expired/:userUuid', async (req, res) => {
+  try {
+    const jobs = await models.Job.findAll({
+      where: {
+        isExpired: true,
       },
-    },
-  });
+    });
+
+    return res.json(jobs);
+  } catch (e) {
+    return res.json({
+      error: true,
+      message: e.message,
+    });
+  }
 });
 
 module.exports = router;

@@ -2,6 +2,7 @@ const uuidv4 = require('uuid/v4');
 const faker = require('faker');
 const { jobDescription } = require('../mockData/jobposting');
 const { fake } = require('faker');
+const moment = require('moment');
 
 function returnRandomPhoto() {
   const numBetween0and2 = returnRandomNumberBetweenZeroAnd(1);
@@ -56,7 +57,7 @@ function returnRandomEducation() {
   return educations[idx];
 }
 
-function createJobs(userUuid = '0dfb2fd1-7993-4255-86fd-1e79e6cbb44f') {
+function createJobs(userUuid = 'ebebb5f2-c7c7-493c-86b1-f8f790987df9') {
   /*
     uuid
     companyName
@@ -94,7 +95,7 @@ function createJobs(userUuid = '0dfb2fd1-7993-4255-86fd-1e79e6cbb44f') {
       descriptionHTML: jobDescription,
       userUuid,
       isPublished: true,
-      publishedDate: new Date(),
+      publishedDate: moment().subtract(20, 'days').toDate(),
       createdAt: new Date(),
       updatedAt: new Date(),
       images: [
@@ -189,10 +190,25 @@ const countries = [
   'taiwan',
 ];
 
+function createCouponCodes() {
+  const couponArray = [];
+
+  for (let i = 0; i < 20; i++) {
+    couponArray.push({
+      uuid: uuidv4(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+  }
+
+  return couponArray;
+}
+
 module.exports = {
   createJobs,
   createResumes,
   createUsers,
   fiftyUserUuids,
+  createCouponCodes,
   countries,
 };

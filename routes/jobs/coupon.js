@@ -16,13 +16,13 @@ router.get('/coupons', async (req, res) => {
   return res.json(codes);
 });
 
-// router.post('/coupons/create', async (req, res) => {
-//   const coupon = models.Coupon.build({});
+router.post('/coupons/create', async (req, res) => {
+  const coupon = models.Coupon.build({});
 
-//   await coupon.save();
+  await coupon.save();
 
-//   return res.json(coupon);
-// });
+  return res.json(coupon);
+});
 
 const saltRounds = 10;
 
