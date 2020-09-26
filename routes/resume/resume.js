@@ -1,7 +1,7 @@
 var models = require('../../models');
 var router = require('express').Router();
 var aws = require('aws-sdk');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY_TEST);
 const dataUriToBuffer = require('data-uri-to-buffer');
 const { isAuthorized } = require('../util');
 
