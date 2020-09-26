@@ -1,4 +1,4 @@
-const stripe = require('stripe')(process.env.stripe_private_key);
+const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY_TEST);
 const bodyParser = require('body-parser');
 var models = require('../../models');
 var router = require('express').Router();
