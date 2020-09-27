@@ -35,6 +35,9 @@ module.exports = (sequelize, DataTypes) => {
     isPublished: {
       type: DataTypes.BOOLEAN,
     },
+    publishedDate: {
+      type: DataTypes.DATE,
+    },
     profileImage: {
       type: DataTypes.STRING,
     },

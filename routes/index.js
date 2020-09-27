@@ -7,17 +7,8 @@ var cron = require('node-cron');
 
 router.get('/', async function (req, res) {});
 
-router.get('/node-cron', async (req, res) => {
+const cronJob = cron.schedule('* * * * 1-7', async () => {
   try {
-    // const jobs = await models.Job.findAll({
-    // where: {
-    //   isPublished: true,
-    //   publishedDate: {
-    //     [Op.lt]: moment().subtract(45, 'days').toDate(),
-    //   },
-    // },
-    // });
-
     await models.Job.update(
       {
         isExpired: true,
@@ -33,28 +24,22 @@ router.get('/node-cron', async (req, res) => {
       }
     );
 
-    // if (!jobs) {
-    //   return res.json({
-    //     error: true,
-    //     message: 'No jobs found',
-    //   });
-    // }
-
-    // await jobs.update({
-    //   isPublished: false,
-    //   isExpired: true,
-    // });
-
-    res.json({
-      error: false,
-      message: 'Update successful',
-    });
+    await models.Resume.update(
+      {
+        isExpired: true,
+        isPublished: false,
+      },
+      {
+        where: {
+          isPublished: true,
+          publishedDate: {
+            [Op.lt]: moment().subtract(30, 'days').toDate(),
+          },
+        },
+      }
+    );
   } catch (e) {
-    res.json({
-      error: true,
-      message: e.message,
-    });
+    throw new Error(e.message);
   }
 });
-
-module.exports = router;
+module.exports = { router, cronJob };

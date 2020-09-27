@@ -8,7 +8,7 @@ const { search, jobs, stepper, dashboard, coupon } = require('./routes/jobs/');
 // will turn into named exports
 const resume = require('./routes/resume/resume');
 const checkout = require('./routes/checkout/checkout');
-const baseRoutes = require('./routes');
+const { router: baseRoutes, cronJob } = require('./routes');
 
 // const keys = require('./config/keys');
 
@@ -32,6 +32,8 @@ app.use('/api', dashboard);
 app.use('/api', resume);
 app.use('/api', checkout);
 app.use('/api', coupon);
+
+cronJob.start();
 
 const PORT = process.env.PORT || 5000;
 
