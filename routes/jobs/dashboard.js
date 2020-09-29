@@ -16,6 +16,7 @@ router.get(
         where: {
           userUuid,
           isPublished: false,
+          isExpired: false,
         },
         attributes: ['companyName', 'uuid'],
         order: [['createdAt', 'DESC']],

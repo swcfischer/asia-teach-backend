@@ -388,10 +388,18 @@ router.post(
         },
         // specify attributes when you know more
       });
-      await resume.update({
-        isPublished: true,
-        lastUpdatedAt: new Date(),
-      });
+      if (resume.publishedDate) {
+        await resume.update({
+          isPublished: true,
+          lastUpdatedAt: new Date(),
+        });
+      } else {
+        await resume.update({
+          isPublished: true,
+          lastUpdatedAt: new Date(),
+          publishedDate: new Date(),
+        });
+      }
       return res.json({ error: false, message: 'Resume Published' });
     } catch (e) {
       return res.json({
