@@ -3,7 +3,7 @@ var router = require('express').Router();
 const bcrypt = require('bcrypt');
 const uuidv4 = require('uuid/v4');
 const jwt = require('jsonwebtoken');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY_TEST);
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // router.get('/coupons', async (req, res) => {
 //   const codes = await models.Coupon.findAll({
