@@ -7,9 +7,9 @@ const { isAuthorized } = require('../util');
 const toCents = 100;
 
 const jobPriceMap = {
-  one: 65 * toCents,
-  five: 275 * toCents,
-  ten: 450 * toCents,
+  one: 20 * toCents,
+  five: 75 * toCents,
+  ten: 100 * toCents,
 };
 
 router.post('/payments-jobs', async (req, res) => {
@@ -70,7 +70,7 @@ router.post(
         case 'payment_intent.succeeded':
           const paymentIntent = event.data.object;
           const amount = paymentIntent.amount;
-          if (amount === 55 * 100) {
+          if (amount === 25 * 100) {
             return res.json({
               received: true,
             });
@@ -81,11 +81,11 @@ router.post(
             },
           });
           let limit;
-          if (amount === 450 * 100) {
+          if (amount === 100 * 100) {
             limit = 10;
-          } else if (amount === 275 * 100) {
+          } else if (amount === 75 * 100) {
             limit = 5;
-          } else if (amount === 65 * 100) {
+          } else if (amount === 20 * 100) {
             limit = 1;
           }
 
