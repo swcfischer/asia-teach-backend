@@ -28,9 +28,9 @@ Job.belongsTo(User);
 User.hasOne(Resume);
 Resume.belongsTo(User);
 
-User.sync({ force: true });
+User.sync({ force: false });
 Job.sync({ force: false });
-Resume.sync({ force: false });
+Resume.sync({ force: true });
 Coupon.sync({ force: false });
 
 module.exports = {
