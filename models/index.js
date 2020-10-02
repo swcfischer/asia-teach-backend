@@ -30,8 +30,8 @@ Resume.belongsTo(User);
 
 User.sync({ force: false });
 Job.sync({ force: false });
-Resume.sync({ force: true });
-Coupon.sync({ force: false });
+Resume.sync({ force: false });
+Coupon.sync({ force: true });
 
 module.exports = {
   Sequelize,
