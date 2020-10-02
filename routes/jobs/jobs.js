@@ -40,24 +40,24 @@ var s3 = new aws.S3();
 // });
 
 // // * Creates a job tied to a user
-// router.post('/jobs/create', async (req, res) => {
-//   const { userUuid } = req.body;
-//   try {
-//     const job = models.Job.build({
-//       userUuid,
-//     });
+router.post('/jobs/create', async (req, res) => {
+  const { userUuid } = req.body;
+  try {
+    const job = models.Job.build({
+      userUuid,
+    });
 
-//     await job.save();
+    await job.save();
 
-//     return res.json({
-//       job,
-//     });
-//   } catch (err) {
-//     return res.json({
-//       error: true,
-//       message: err.message,
-//     });
-//   }
-// });
+    return res.json({
+      job,
+    });
+  } catch (err) {
+    return res.json({
+      error: true,
+      message: err.message,
+    });
+  }
+});
 
 module.exports = router;
