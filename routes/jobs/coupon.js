@@ -7,7 +7,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const sgMail = require('@sendgrid/mail');
 // const bodyParser = require('body-parser');
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+sgMail.setApiKey(process.env.SENDGRID_API_KEY_TRUE);
 
 router.get('/coupons', async (req, res) => {
   const codes = await models.Coupon.findAll({
@@ -86,7 +86,7 @@ router.post('/coupon/send-emails', async (req, res) => {
       const { email, country, company } = emailArr[i];
       const couponInstance = coupons[i];
       const code = couponInstance.uuid;
-      const url =
+      let url =
         process.env.NODE_ENV === 'production'
           ? `https://www.asia-teach.com/special-register/${code}`
           : `http://localhost:3000/special-register/${code}`;
