@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY_TRUE);
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const models = require('../../models');
 const { isAuthorized } = require('../util');
@@ -71,6 +71,7 @@ router.post('/register', async (req, res) => {
             message: 'Confirmation email was sent to ' + user.email,
           });
         } catch (e) {
+          console.log('here!!!!', e);
           return res.json({
             error: true,
             message: e.message,

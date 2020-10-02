@@ -7,7 +7,7 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const sgMail = require('@sendgrid/mail');
 // const bodyParser = require('body-parser');
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY_TRUE);
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 router.get('/coupons', async (req, res) => {
   const codes = await models.Coupon.findAll({
