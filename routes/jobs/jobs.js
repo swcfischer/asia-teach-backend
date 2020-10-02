@@ -15,49 +15,49 @@ var s3 = new aws.S3();
 // ! SHOULD USE ISAUTHORIZED
 
 // * Creates a job
-router.post('/job', async (req, res) => {
-  // ! this has to be updated to match the most recent
-  // ! which is the data in the seeders folder
-  const { userUuid, city, ageGroup, name, country, thumbnail } = req.body;
-  try {
-    const job = await models.Job.build({
-      userUuid,
-      city,
-      ageGroup,
-      name,
-      country,
-      thumbnail,
-    });
-    await job.save();
+// router.post('/job', async (req, res) => {
+//   // ! this has to be updated to match the most recent
+//   // ! which is the data in the seeders folder
+//   const { userUuid, city, ageGroup, name, country, thumbnail } = req.body;
+//   try {
+//     const job = await models.Job.build({
+//       userUuid,
+//       city,
+//       ageGroup,
+//       name,
+//       country,
+//       thumbnail,
+//     });
+//     await job.save();
 
-    return res.json(job);
-  } catch (err) {
-    return res.json({
-      error: true,
-      message: err.message,
-    });
-  }
-});
+//     return res.json(job);
+//   } catch (err) {
+//     return res.json({
+//       error: true,
+//       message: err.message,
+//     });
+//   }
+// });
 
-// * Creates a job tied to a user
-router.post('/jobs/create', async (req, res) => {
-  const { userUuid } = req.body;
-  try {
-    const job = models.Job.build({
-      userUuid,
-    });
+// // * Creates a job tied to a user
+// router.post('/jobs/create', async (req, res) => {
+//   const { userUuid } = req.body;
+//   try {
+//     const job = models.Job.build({
+//       userUuid,
+//     });
 
-    await job.save();
+//     await job.save();
 
-    return res.json({
-      job,
-    });
-  } catch (err) {
-    return res.json({
-      error: true,
-      message: err.message,
-    });
-  }
-});
+//     return res.json({
+//       job,
+//     });
+//   } catch (err) {
+//     return res.json({
+//       error: true,
+//       message: err.message,
+//     });
+//   }
+// });
 
 module.exports = router;

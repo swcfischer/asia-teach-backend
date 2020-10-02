@@ -1,3 +1,5 @@
+const { jobDescription } = require('../mockData/jobposting');
+
 module.exports = (sequelize, DataTypes, User) => {
   var Job = sequelize.define('job', {
     uuid: {
@@ -62,6 +64,7 @@ module.exports = (sequelize, DataTypes, User) => {
     },
     descriptionHTML: {
       type: DataTypes.TEXT,
+      defaultValue: jobDescription,
     },
     images: {
       type: DataTypes.ARRAY(DataTypes.TEXT),

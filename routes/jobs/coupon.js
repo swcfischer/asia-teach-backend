@@ -5,7 +5,7 @@ const uuidv4 = require('uuid/v4');
 const jwt = require('jsonwebtoken');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const sgMail = require('@sendgrid/mail');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -36,13 +36,17 @@ router.get('/coupons', async (req, res) => {
 const testBody = {
   pass: 'c0c1291e-8191-49b3-becb-d638abf1e311',
   emailArr: [
-    { email: 'swcfischer@gmail.com', country: 'Japan', company: 'Asia-Teach' },
-    { email: 'zswcfischer@gmail.com', country: 'Japan', company: 'Asia-Teach' },
+    {
+      email: 'mgfischer0819@gmail.com',
+      country: 'Japan',
+      company: 'Asia-Teach',
+    },
+    // { email: 'zswcfischer@gmail.com', country: 'Japan', company: 'Asia-Teach' },
   ],
 };
 
 router.post('/coupon/send-emails', async (req, res) => {
-  let { emailArr, pass } = testBody;
+  let { emailArr, pass } = req.body;
 
   if (pass !== 'c0c1291e-8191-49b3-becb-d638abf1e311') {
     return res.json({
