@@ -193,7 +193,7 @@ const countries = [
 function createCouponCodes() {
   const couponArray = [];
 
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 500; i++) {
     couponArray.push({
       uuid: uuidv4(),
       createdAt: new Date(),
