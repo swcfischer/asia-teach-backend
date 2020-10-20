@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    favorites: {
+      type: DataTypes.ARRAY(DataTypes.UUID),
+      defaultValue: [],
+    },
   });
 
   return User;

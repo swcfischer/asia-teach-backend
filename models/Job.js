@@ -81,7 +81,18 @@ module.exports = (sequelize, DataTypes, User) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    // photos: [ of strings ]
+    numberOfClicks: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+    timeSpent: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+    favoritedBy: {
+      type: DataTypes.ARRAY(DataTypes.UUID),
+      defaultValue: [],
+    },
   });
 
   return Job;

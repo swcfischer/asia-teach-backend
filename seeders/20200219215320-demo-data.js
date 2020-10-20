@@ -15,10 +15,10 @@ module.exports = {
     const users = createUsers(ids);
     const resumes = createResumes(ids);
     const coupons = createCouponCodes();
-    // await queryInterface.bulkInsert('users', users, {});
-    // await queryInterface.bulkInsert('resumes', resumes, {});
-    // await queryInterface.bulkInsert('jobs', jobs, {});
-    await queryInterface.bulkInsert('coupons', coupons, {});
+    await queryInterface.bulkInsert('users', users, {});
+    await queryInterface.bulkInsert('resumes', resumes, {});
+    await queryInterface.bulkInsert('jobs', jobs, {});
+    // await queryInterface.bulkInsert('coupons', coupons, {});
     return;
   },
 
