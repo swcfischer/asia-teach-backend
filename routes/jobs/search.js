@@ -92,6 +92,7 @@ router.get('/job/:uuid', async (req, res) => {
         'link',
         'uuid',
         'favoritedBy',
+        'images',
       ],
     });
     return res.json({
