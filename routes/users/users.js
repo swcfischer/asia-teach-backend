@@ -5,6 +5,7 @@ const express = require('express');
 const router = express.Router();
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const sgMail = require('@sendgrid/mail');
+const { Op } = require('sequelize');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const models = require('../../models');
@@ -379,5 +380,168 @@ router.post('/contact-us', async (req, res) => {
     });
   }
 });
+
+router.post('/favorites/:userUuid/:jobUuid', isAuthorized, async (req, res) => {
+  // ! must have actual logic for adding the userUuid to the job
+  const { userUuid, jobUuid } = req.params;
+  try {
+    const user = await models.User.findOne({
+      where: {
+        uuid: userUuid,
+      },
+      attributes: ['favorites', 'uuid'],
+    });
+
+    if (!user) {
+      throw new Error('User does not exist');
+    }
+
+    // * actual logic to add to favorites
+    const job = await models.Job.findOne({
+      where: {
+        uuid: jobUuid,
+      },
+      attributes: ['favoritedBy', 'uuid'],
+    });
+    if (!job) {
+      throw new Error('This job does not exist');
+    }
+
+    const jobIndex = user.favorites.indexOf(jobUuid);
+
+    if (jobIndex !== -1) {
+      // * Must do the actual logic on the instance for job and user
+      const newFavorites = user.favorites.filter(
+        (fav, idx) => idx !== jobIndex
+      );
+
+      const newFavoritedBy = job.favoritedBy.filter(
+        (fav, idx) => fav !== userUuid
+      );
+
+      await user.update({
+        favorites: newFavorites,
+      });
+
+      await job.update({
+        favoritedBy: newFavoritedBy,
+      });
+
+      return res.json({
+        error: false,
+        message: 'Job removed from favorites',
+        favoritedBy: newFavoritedBy,
+      });
+    }
+    const newFavoritedBy = job.favoritedBy.concat(userUuid);
+    const newFavorites = user.favorites.concat(jobUuid);
+    await user.update({
+      favorites: newFavorites,
+    });
+    await job.update({
+      favoritedBy: newFavoritedBy,
+    });
+    return res.json({
+      error: false,
+      message: 'Job added to favorites in account page',
+      favoritedBy: newFavoritedBy,
+    });
+  } catch (e) {
+    return res.json({
+      error: true,
+      message: e.message,
+    });
+  }
+});
+
+router.get('/favorites/:userUuid', isAuthorized, async (req, res) => {
+  const { userUuid } = req.params;
+  try {
+    const userWithFavorites = await models.User.findOne({
+      where: {
+        uuid: userUuid,
+      },
+    });
+
+    if (!userWithFavorites) {
+      throw new Error('Now user found');
+    }
+
+    const jobs = await models.Job.findAll({
+      where: {
+        uuid: {
+          [Op.in]: userWithFavorites.favorites,
+        },
+      },
+      attributes: ['companyName', 'uuid', 'country', 'city'],
+    });
+
+    return res.json({
+      error: false,
+      jobs,
+    });
+  } catch (e) {
+    return res.json({
+      error: true,
+      message: e.message,
+    });
+  }
+});
+
+router.post(
+  '/favorites/remove/:userUuid/:jobUuid',
+  isAuthorized,
+  async (req, res) => {
+    const { userUuid, jobUuid } = req.params;
+    try {
+      // going to want to fetch both the job
+      // and the user
+      // remove the uuid for each, respectively
+      // update both instances
+      // return new list of favorites
+      // for the redux store
+
+      const user = await models.User.findOne({
+        where: {
+          uuid: userUuid,
+        },
+        attributes: ['uuid', 'favorites'],
+      });
+
+      const job = await models.Job.findOne({
+        where: {
+          uuid: jobUuid,
+        },
+        attributes: ['uuid', 'favoritedBy'],
+      });
+
+      if (!job || !user) {
+        throw new Error('Job or User does not exist');
+      }
+
+      const newFavorites = user.favorites.filter((fav) => fav !== jobUuid);
+      const newFavoritedBy = job.favoritedBy.filter(
+        (favoritedByUuuid) => favoritedByUuuid !== userUuid
+      );
+
+      await user.update({
+        favorites: newFavorites,
+      });
+
+      await job.update({
+        favoritedBy: newFavoritedBy,
+      });
+
+      return res.json({
+        error: false,
+      });
+    } catch (e) {
+      return res.json({
+        error: true,
+        message: e.message,
+      });
+    }
+  }
+);
 
 module.exports = router;

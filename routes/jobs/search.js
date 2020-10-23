@@ -90,6 +90,8 @@ router.get('/job/:uuid', async (req, res) => {
         'thumbnail',
         'email',
         'link',
+        'uuid',
+        'favoritedBy',
       ],
     });
     return res.json({
@@ -115,6 +117,63 @@ router.get('/job/images/:uuid', async (req, res) => {
     });
 
     return res.json(job);
+  } catch (e) {
+    return res.json({
+      error: true,
+      message: e.message,
+    });
+  }
+});
+
+router.post('/job/clicks', async (req, res) => {
+  const { uuid } = req.body;
+  try {
+    const job = await models.Job.findOne({ where: { uuid } });
+
+    if (!job) {
+      throw new Error("This job doesn't exist");
+    }
+
+    await job.update({
+      numberOfClicks: job.numberOfClicks + 1,
+    });
+
+    return res.json({
+      error: false,
+      message: 'Click logged',
+    });
+  } catch (e) {
+    return res.json({
+      error: true,
+      message: e.message,
+    });
+  }
+});
+
+router.post('/job/time', async (req, res) => {
+  const { timeSpent, uuid } = req.body;
+  console.log(timeSpent, uuid);
+
+  try {
+    const job = await models.Job.findOne({
+      where: {
+        uuid,
+      },
+      attributes: ['timeSpent', 'uuid'],
+    });
+
+    if (!job) {
+      throw new Error('Job does not exist');
+    }
+
+    await job.update({
+      timeSpent: job.timeSpent + timeSpent,
+    });
+
+    return res.json({
+      error: false,
+      message: 'Success',
+    });
   } catch (e) {
     return res.json({
       error: true,

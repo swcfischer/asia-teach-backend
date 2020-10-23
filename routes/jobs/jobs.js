@@ -60,4 +60,56 @@ router.post('/jobs/create', async (req, res) => {
   }
 });
 
+router.get('/job/clicks/:jobUuid', async (req, res) => {
+  const { jobUuid: uuid } = req.params;
+  try {
+    const job = await models.Job.findOne({
+      where: { uuid },
+      attributes: ['numberOfClicks'],
+    });
+
+    if (!job) {
+      throw new Error('Job does not exist');
+    }
+
+    return res.json({
+      error: false,
+      job,
+    });
+  } catch (e) {
+    return res.json({
+      error: true,
+      message: e.message,
+    });
+  }
+});
+
+router.get('/job/metrics/:jobUuid', async (req, res) => {
+  const { jobUuid } = req.params;
+  try {
+    const job = await models.Job.findOne({
+      where: {
+        uuid: jobUuid,
+      },
+      attributes: ['timeSpent', 'numberOfClicks', 'favoritedBy'],
+    });
+
+    if (!job) {
+      throw new Error('This job does not exist');
+    }
+
+    return res.json({
+      error: false,
+      timeSpent: job.timeSpent,
+      numberOfClicks: job.numberOfClicks,
+      favoritedBy: job.favoritedBy.length,
+    });
+  } catch (e) {
+    return res.json({
+      error: true,
+      message: e.message,
+    });
+  }
+});
+
 module.exports = router;
