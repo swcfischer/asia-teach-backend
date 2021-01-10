@@ -41,10 +41,10 @@ var s3 = new aws.S3();
 
 // // * Creates a job tied to a user
 router.post('/jobs/create', async (req, res) => {
-  const { userUuid } = req.body;
   try {
     const job = models.Job.build({
-      userUuid,
+      ...reg.body,
+      userUuid: 'bd46918e-3919-414f-8272-502a54215ea2',
     });
 
     await job.save();
