@@ -43,7 +43,7 @@ var s3 = new aws.S3();
 router.post('/jobs/create', async (req, res) => {
   try {
     const job = models.Job.build({
-      ...reg.body,
+      ...req.body,
       userUuid: 'bd46918e-3919-414f-8272-502a54215ea2',
     });
 
