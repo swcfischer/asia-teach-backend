@@ -18,6 +18,7 @@ const { router: baseRoutes, cronJob } = require('./routes');
 const app = express();
 app.use(
   cors({
+    origin: '*',
     exposedHeaders: 'Auth-Token,Authorization',
   })
 );
