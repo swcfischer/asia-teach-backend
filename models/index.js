@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
+let sequelize;
 if (process.env.DATABASE_URL) {
   sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
@@ -7,6 +8,9 @@ if (process.env.DATABASE_URL) {
     port: 5432,
     host: process.env.DATABASE_HOST,
     logging: true, //false
+    dialectOptions: {
+      ssl: true,
+    },
   });
 } else {
   sequelize = new Sequelize('stevenfischer', 'stevenfischer', '', {
