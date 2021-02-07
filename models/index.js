@@ -28,6 +28,8 @@ Job.belongsTo(User);
 User.hasOne(Resume);
 Resume.belongsTo(User);
 
+// How to drop the db
+
 User.sync({ force: false });
 Job.sync({ force: false });
 Resume.sync({ force: false });
