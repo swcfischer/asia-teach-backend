@@ -44,7 +44,7 @@ router.post('/jobs/create', async (req, res) => {
   try {
     const job = models.Job.build({
       ...req.body,
-      userUuid: 'bd46918e-3919-414f-8272-502a54215ea2',
+      userUuid: '31e588c8-4be9-4b60-b769-f2d0a89b6291',
     });
 
     await job.save();
