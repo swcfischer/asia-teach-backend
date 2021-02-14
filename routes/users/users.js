@@ -160,6 +160,7 @@ router.get('/current_user', async (req, res) => {
     // ! I'm not sure if I want req.user
     // ! or if I want to do it through the client via the redux store
     if (verified) {
+      res.json({ data: verified.data });
       const user = await models.User.findOne({
         where: {
           uuid: verified.data,
