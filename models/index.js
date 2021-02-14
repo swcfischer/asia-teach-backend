@@ -7,7 +7,7 @@ if (process.env.DATABASE_URL) {
     protocol: 'postgres',
     port: 5432,
     host: process.env.DATABASE_HOST,
-    logging: true, //false
+    // logging: true, //false
   });
 } else {
   sequelize = new Sequelize('stevenfischer', 'stevenfischer', '', {
@@ -29,7 +29,7 @@ Job.belongsTo(User);
 User.hasOne(Resume);
 Resume.belongsTo(User);
 
-User.sync({ force: true });
+User.sync({ force: false });
 Job.sync({ force: false });
 Resume.sync({ force: false });
 Coupon.sync({ force: false });
