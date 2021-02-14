@@ -1,8 +1,6 @@
 var models = require('../../models');
 var router = require('express').Router();
 var aws = require('aws-sdk');
-const { isAuthorized } = require('../util');
-const uuidV4 = require('uuid/v4');
 
 aws.config.update({
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
