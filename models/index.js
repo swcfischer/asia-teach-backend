@@ -7,6 +7,13 @@ if (process.env.DATABASE_URL) {
     protocol: 'postgres',
     port: 5432,
     host: process.env.DATABASE_HOST,
+    ssl: true,
+    dialectOptions: {
+      ssl: {
+        require: true, // This will help you. But you will see nwe error
+        rejectUnauthorized: false, // This line will fix new error
+      },
+    },
     // logging: true, //false
   });
 } else {
