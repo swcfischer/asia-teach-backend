@@ -10,7 +10,7 @@
     "client": "npm run start --prefix client"
   },
   "engines": {
-    "node": "14.x"
+    "node": "12.x"
   },
   "keywords": [],
   "author": "",
