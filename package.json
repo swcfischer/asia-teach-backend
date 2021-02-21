@@ -9,6 +9,9 @@
     "server": "nodemon server/app.js",
     "client": "npm run start --prefix client"
   },
+  "engines": {
+    "node": "14.x"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
