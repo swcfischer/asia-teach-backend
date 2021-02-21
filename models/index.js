@@ -7,13 +7,13 @@ if (process.env.NODE_ENV === 'production') {
     protocol: 'postgres',
     port: 5432,
     host: process.env.DATABASE_HOST,
-    ssl: true,
-    dialectOptions: {
-      ssl: {
-        require: true, // This will help you. But you will see nwe error
-        rejectUnauthorized: false, // This line will fix new error
-      },
-    },
+    // ssl: true,
+    // dialectOptions: {
+    //   ssl: {
+    //     require: true, // This will help you. But you will see nwe error
+    //     rejectUnauthorized: false, // This line will fix new error
+    //   },
+    // },
     // logging: true,
   });
 } else {
