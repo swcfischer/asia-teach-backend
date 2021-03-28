@@ -44,7 +44,7 @@ router.post('/jobs/create', async (req, res) => {
   try {
     const job = models.Job.build({
       ...req.body,
-      userUuid: '4a2f7ed1-cad1-41b9-aeb9-2838c89ba0b6',
+      userUuid: '55d2426b-b4c6-4404-8078-80df68f21bc8',
     });
 
     await job.save();
@@ -58,6 +58,46 @@ router.post('/jobs/create', async (req, res) => {
       message: err.message,
     });
   }
+});
+
+router.post('/jobs/create/:userUuid', isAuthorized, async (req, res) => {
+  try {
+    const { userUuid } = req.params;
+
+    const jobs = await models.Job.findAll({
+      where: {
+        userUuid,
+        isPublished: false,
+      },
+    });
+
+    if (jobs.length > 0) {
+      return res.json({
+        error: true,
+        errorType: 'already_has_job',
+        message: 'You already have an upublished job',
+      });
+    }
+
+    const job = models.Job.build({
+      ...req.body,
+      userUuid: '55d2426b-b4c6-4404-8078-80df68f21bc8',
+    });
+
+    await job.save();
+
+    return res.json({
+      error: false,
+      message: 'Job created successfully and added to your account page',
+    });
+  } catch (e) {
+    return res.json({
+      error: true,
+      message: e.message,
+    });
+  }
+
+  return res.json({ message: 'success' });
 });
 
 router.get('/job/clicks/:jobUuid', async (req, res) => {
