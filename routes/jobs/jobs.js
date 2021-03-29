@@ -74,7 +74,7 @@ router.post('/jobs/create/:userUuid', isAuthorized, async (req, res) => {
     if (jobs.length > 0) {
       return res.json({
         error: true,
-        errorType: 'already_has_job',
+        errorType: 'HAS_JOB',
         message: 'You already have an upublished job',
       });
     }
@@ -92,6 +92,7 @@ router.post('/jobs/create/:userUuid', isAuthorized, async (req, res) => {
   } catch (e) {
     return res.json({
       error: true,
+      errorType: 'CATCH',
       message: e.message,
     });
   }
