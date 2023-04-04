@@ -1,10 +1,10 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { Sequelize, DataTypes } = require("sequelize");
 
 let sequelize;
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === "production") {
   sequelize = new Sequelize(process.env.DATABASE_URL, {
-    dialect: 'postgres',
-    protocol: 'postgres',
+    dialect: "postgres",
+    protocol: "postgres",
     port: 5432,
     dialectOptions: {
       ssl: true,
@@ -12,16 +12,16 @@ if (process.env.NODE_ENV === 'production') {
     host: process.env.DATABASE_HOST,
   });
 } else {
-  sequelize = new Sequelize('stevenfischer', 'stevenfischer', '', {
-    host: 'localhost',
-    dialect: 'postgres',
+  sequelize = new Sequelize("asiateach", "stevenfischer", "", {
+    host: "localhost",
+    dialect: "postgres",
   });
 }
 
-const User = require('./User')(sequelize, DataTypes);
-const Job = require('./Job')(sequelize, DataTypes);
-const Resume = require('./Resume')(sequelize, DataTypes);
-const Coupon = require('./Coupon')(sequelize, DataTypes);
+const User = require("./User")(sequelize, DataTypes);
+const Job = require("./Job")(sequelize, DataTypes);
+const Resume = require("./Resume")(sequelize, DataTypes);
+const Coupon = require("./Coupon")(sequelize, DataTypes);
 
 // associations
 

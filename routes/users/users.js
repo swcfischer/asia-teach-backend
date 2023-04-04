@@ -1,28 +1,28 @@
-const bcrypt = require('bcrypt');
-const uuidv4 = require('uuid/v4');
-const jwt = require('jsonwebtoken');
-const express = require('express');
+const bcrypt = require("bcrypt");
+const uuidv4 = require("uuid/v4");
+const jwt = require("jsonwebtoken");
+const express = require("express");
 const router = express.Router();
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const sgMail = require('@sendgrid/mail');
-const { Op } = require('sequelize');
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const sgMail = require("@sendgrid/mail");
+const { Op } = require("sequelize");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const models = require('../../models');
-const { isAuthorized } = require('../util');
+const models = require("../../models");
+const { isAuthorized } = require("../util");
 
 const saltRounds = 10;
 
 // ! I saw Dave Ed doing object validation with JOI
 // ! something worth considering
 
-router.post('/register', async (req, res) => {
+router.post("/register", async (req, res) => {
   const { email, password, password2 } = req.body;
 
   if (password2) {
     return res.json({
       error: true,
-      message: 'Invalid inputs',
+      message: "Invalid inputs",
     });
   }
 
@@ -38,7 +38,7 @@ router.post('/register', async (req, res) => {
     } catch (e) {
       return res.json({
         error: true,
-        message: 'That email is already in use',
+        message: "That email is already in use",
       });
     }
 
@@ -46,33 +46,34 @@ router.post('/register', async (req, res) => {
     jwt.sign(
       { data: user.uuid },
       process.env.email_secret,
-      { expiresIn: '2d' },
+      { expiresIn: "2d" },
       async (err, emailToken) => {
         if (err) {
           throw new Error(err.message);
         }
         try {
           let url;
-          if (process.env.NODE_ENV === 'production') {
+          if (process.env.NODE_ENV === "production") {
             url = `https://www.asia-teach.com/confirmation/${emailToken}`;
           } else {
             url = `http://localhost:3000/confirmation/${emailToken}`;
           }
           const msg = {
             to: email,
-            from: 'Hello@asia-teach.com',
-            subject: 'Confirmation Email from Asia Teach',
+            from: "Hello@asia-teach.com",
+            subject: "Confirmation Email from Asia Teach",
             text: `Hello! \nUse this link to verify your email: ${url}`,
             html: `Hello!<br /><p>Please use this link to verify your email <a href=${url}>here</a>.</p>`,
           };
+          console.log("🚀 ~ file: users.js:68 ~ msg:", msg);
           await sgMail.send(msg);
 
           return res.json({
             error: false,
-            message: 'Confirmation email was sent to ' + user.email,
+            message: "Confirmation email was sent to " + user.email,
           });
         } catch (e) {
-          console.log('here!!!!', e);
+          console.log("here!!!!", e);
           return res.json({
             error: true,
             message: e.message,
@@ -83,7 +84,7 @@ router.post('/register', async (req, res) => {
   });
 });
 
-router.post('/confirmation/', async (req, res) => {
+router.post("/confirmation/", async (req, res) => {
   const { token } = req.body;
 
   jwt.verify(token, process.env.email_secret, async (err, verified) => {
@@ -102,7 +103,7 @@ router.post('/confirmation/', async (req, res) => {
     if (!user) {
       return res.json({
         error: true,
-        message: 'User not found',
+        message: "User not found",
       });
     }
     const customer = await stripe.customers.create({
@@ -119,20 +120,20 @@ router.post('/confirmation/', async (req, res) => {
 
     return res.json({
       error: false,
-      message: 'Account confirmation successful',
+      message: "Account confirmation successful",
     });
   });
 });
 
-router.get('/users', async (req, res) => {
+router.get("/users", async (req, res) => {
   const users = await models.User.findAll({
-    attributes: ['uuid', 'email'],
+    attributes: ["uuid", "email"],
   });
 
   res.json(users);
 });
 
-router.get('/user/:uuid/jobs', async (req, res) => {
+router.get("/user/:uuid/jobs", async (req, res) => {
   const { uuid } = req.params;
   try {
     const jobs = await models.Job.findAll({
@@ -144,15 +145,15 @@ router.get('/user/:uuid/jobs', async (req, res) => {
   } catch (err) {}
 });
 
-router.get('/current_user', async (req, res) => {
-  const authorization = req.header('authorization');
+router.get("/current_user", async (req, res) => {
+  const authorization = req.header("authorization");
   if (!authorization) {
     return res.json({
       currentUser: null,
     });
   }
 
-  const token = authorization.split(' ')[1];
+  const token = authorization.split(" ")[1];
 
   try {
     const verified = await jwt.verify(token, process.env.secret);
@@ -164,7 +165,7 @@ router.get('/current_user', async (req, res) => {
         where: {
           uuid: verified.data,
         },
-        attributes: ['email', 'confirmed', 'uuid', 'subscriptionId'],
+        attributes: ["email", "confirmed", "uuid", "subscriptionId"],
       });
 
       return res.json({ currentUser: user });
@@ -181,33 +182,33 @@ router.get('/current_user', async (req, res) => {
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   const user = await models.User.findOne({
     where: {
       email,
     },
-    attributes: ['uuid', 'confirmed', 'email', 'password', 'subscriptionId'],
+    attributes: ["uuid", "confirmed", "email", "password", "subscriptionId"],
   });
 
   if (!user) {
     return res.json({
       error: true,
-      message: 'Email or password was incorrect',
+      message: "Email or password was incorrect",
     });
   }
   if (!user.confirmed) {
     return res.json({
       error: true,
-      message: 'You must verify your email before you login',
+      message: "You must verify your email before you login",
     });
   }
   bcrypt.compare(password, user.password, (err, result) => {
     if (err || !result) {
       return res.json({
         error: true,
-        message: 'Email or password was incorrect',
+        message: "Email or password was incorrect",
       });
     }
 
@@ -215,10 +216,10 @@ router.post('/login', async (req, res) => {
     jwt.sign(
       { data: user.uuid },
       process.env.secret,
-      { expiresIn: '365d' },
+      { expiresIn: "365d" },
       (err, token) => {
         console.log(err);
-        res.set('Auth-Token', token);
+        res.set("Auth-Token", token);
         return res.json({
           currentUser: {
             email: user.email,
@@ -232,7 +233,7 @@ router.post('/login', async (req, res) => {
   });
 });
 
-router.get('/forgot-password', async (req, res) => {
+router.get("/forgot-password", async (req, res) => {
   const { email } = req.query;
   // this will send an email with a 2 day expiration jwt
 
@@ -245,14 +246,14 @@ router.get('/forgot-password', async (req, res) => {
   if (!user) {
     return res.json({
       error: true,
-      message: 'That email does not exist',
+      message: "That email does not exist",
     });
   }
 
   jwt.sign(
     { data: user.uuid },
     process.env.EMAIL_FORGOT_PASS_SECRET,
-    { expiresIn: '2d' },
+    { expiresIn: "2d" },
     async (err, emailToken) => {
       if (err) {
         return res.json({
@@ -262,14 +263,14 @@ router.get('/forgot-password', async (req, res) => {
       }
 
       const url =
-        process.env.NODE_ENV === 'production'
+        process.env.NODE_ENV === "production"
           ? `https://www.asia-teach.com/change-password/${emailToken}`
           : `http://localhost:3000/change-password/${emailToken}`;
 
       const msg = {
-        from: 'Hello@asia-teach.com',
+        from: "Hello@asia-teach.com",
         to: email,
-        subject: 'Forgot Password Email',
+        subject: "Forgot Password Email",
         text: `Hello!\n \n Use this link to enter in a new password ${url}`,
         html: `Hello!
            <br />
@@ -283,17 +284,17 @@ router.get('/forgot-password', async (req, res) => {
 
       return res.json({
         error: false,
-        message: 'Email was sent successfully',
+        message: "Email was sent successfully",
       });
     }
   );
 });
 
-router.post('/set-forgot-password', async (req, res) => {
+router.post("/set-forgot-password", async (req, res) => {
   const { token, password, confirmPassword } = req.body;
   try {
     if (!password || !confirmPassword) {
-      throw new Error('Must provide passwords');
+      throw new Error("Must provide passwords");
     }
     const verified = await jwt.verify(
       token,
@@ -319,7 +320,7 @@ router.post('/set-forgot-password', async (req, res) => {
 
       res.json({
         error: false,
-        message: 'Password has been set',
+        message: "Password has been set",
       });
     });
   } catch (e) {
@@ -330,7 +331,7 @@ router.post('/set-forgot-password', async (req, res) => {
   }
 });
 
-router.get('/user/:userUuid', isAuthorized, async (req, res) => {
+router.get("/user/:userUuid", isAuthorized, async (req, res) => {
   const { userUuid } = req.params;
 
   try {
@@ -338,7 +339,7 @@ router.get('/user/:userUuid', isAuthorized, async (req, res) => {
       where: {
         uuid: userUuid,
       },
-      attributes: ['email', 'confirmed'],
+      attributes: ["email", "confirmed"],
     });
 
     res.json(user);
@@ -350,28 +351,28 @@ router.get('/user/:userUuid', isAuthorized, async (req, res) => {
   }
 });
 
-router.post('/contact-us', async (req, res) => {
+router.post("/contact-us", async (req, res) => {
   const { email, text, subject } = req.body;
 
   if (subject) {
     return res.json({
       error: true,
-      message: 'Invalid inputs',
+      message: "Invalid inputs",
     });
   }
 
   try {
     const msg = {
-      from: 'Hello@asia-teach.com',
-      to: 'Hello@asia-teach.com',
-      subject: 'Contact Us ' + email,
+      from: "Hello@asia-teach.com",
+      to: "Hello@asia-teach.com",
+      subject: "Contact Us " + email,
       text,
     };
     await sgMail.send(msg);
 
     res.json({
       error: false,
-      message: 'Message sent',
+      message: "Message sent",
     });
   } catch (err) {
     res.json({
@@ -381,7 +382,7 @@ router.post('/contact-us', async (req, res) => {
   }
 });
 
-router.post('/favorites/:userUuid/:jobUuid', isAuthorized, async (req, res) => {
+router.post("/favorites/:userUuid/:jobUuid", isAuthorized, async (req, res) => {
   // ! must have actual logic for adding the userUuid to the job
   const { userUuid, jobUuid } = req.params;
   try {
@@ -389,11 +390,11 @@ router.post('/favorites/:userUuid/:jobUuid', isAuthorized, async (req, res) => {
       where: {
         uuid: userUuid,
       },
-      attributes: ['favorites', 'uuid'],
+      attributes: ["favorites", "uuid"],
     });
 
     if (!user) {
-      throw new Error('User does not exist');
+      throw new Error("User does not exist");
     }
 
     // * actual logic to add to favorites
@@ -401,10 +402,10 @@ router.post('/favorites/:userUuid/:jobUuid', isAuthorized, async (req, res) => {
       where: {
         uuid: jobUuid,
       },
-      attributes: ['favoritedBy', 'uuid'],
+      attributes: ["favoritedBy", "uuid"],
     });
     if (!job) {
-      throw new Error('This job does not exist');
+      throw new Error("This job does not exist");
     }
 
     const jobIndex = user.favorites.indexOf(jobUuid);
@@ -429,7 +430,7 @@ router.post('/favorites/:userUuid/:jobUuid', isAuthorized, async (req, res) => {
 
       return res.json({
         error: false,
-        message: 'Job removed from favorites',
+        message: "Job removed from favorites",
         favoritedBy: newFavoritedBy,
       });
     }
@@ -443,7 +444,7 @@ router.post('/favorites/:userUuid/:jobUuid', isAuthorized, async (req, res) => {
     });
     return res.json({
       error: false,
-      message: 'Job added to favorites in account page',
+      message: "Job added to favorites in account page",
       favoritedBy: newFavoritedBy,
     });
   } catch (e) {
@@ -454,7 +455,7 @@ router.post('/favorites/:userUuid/:jobUuid', isAuthorized, async (req, res) => {
   }
 });
 
-router.get('/favorites/:userUuid', isAuthorized, async (req, res) => {
+router.get("/favorites/:userUuid", isAuthorized, async (req, res) => {
   const { userUuid } = req.params;
   try {
     const userWithFavorites = await models.User.findOne({
@@ -464,7 +465,7 @@ router.get('/favorites/:userUuid', isAuthorized, async (req, res) => {
     });
 
     if (!userWithFavorites) {
-      throw new Error('Now user found');
+      throw new Error("Now user found");
     }
 
     const jobs = await models.Job.findAll({
@@ -473,7 +474,7 @@ router.get('/favorites/:userUuid', isAuthorized, async (req, res) => {
           [Op.in]: userWithFavorites.favorites,
         },
       },
-      attributes: ['companyName', 'uuid', 'country', 'city'],
+      attributes: ["companyName", "uuid", "country", "city"],
     });
 
     return res.json({
@@ -489,7 +490,7 @@ router.get('/favorites/:userUuid', isAuthorized, async (req, res) => {
 });
 
 router.post(
-  '/favorites/remove/:userUuid/:jobUuid',
+  "/favorites/remove/:userUuid/:jobUuid",
   isAuthorized,
   async (req, res) => {
     const { userUuid, jobUuid } = req.params;
@@ -505,18 +506,18 @@ router.post(
         where: {
           uuid: userUuid,
         },
-        attributes: ['uuid', 'favorites'],
+        attributes: ["uuid", "favorites"],
       });
 
       const job = await models.Job.findOne({
         where: {
           uuid: jobUuid,
         },
-        attributes: ['uuid', 'favoritedBy'],
+        attributes: ["uuid", "favoritedBy"],
       });
 
       if (!job || !user) {
-        throw new Error('Job or User does not exist');
+        throw new Error("Job or User does not exist");
       }
 
       const newFavorites = user.favorites.filter((fav) => fav !== jobUuid);

@@ -9,9 +9,6 @@
     "server": "nodemon server/app.js",
     "client": "npm run start --prefix client"
   },
-  "engines": {
-    "node": "12.x"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -35,5 +32,9 @@
     "sequelize-cli": "^6.1.0",
     "stripe": "^8.68.0",
     "uuid": "^3.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22",
+    "sqlite3": "^5.1.6"
   }
 }
