@@ -19,6 +19,7 @@ const app = express();
 app.use(
   cors({
     exposedHeaders: "Auth-Token,Authorization",
+    origin: "*",
   })
 );
 app.use(bodyParser.json({ limit: "10mb", extended: true }));
